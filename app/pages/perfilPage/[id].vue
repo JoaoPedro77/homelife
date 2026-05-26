@@ -1,6 +1,20 @@
 <script lang="ts" setup>
 import type { Post } from '~/types'
 
+const route = useRoute()
+const user = useSupabaseUser()
+
+const isOwnProfile = computed(() => {
+  return route.params.id === 'me' || route.params.id === user.value?.id
+})
+
+const profileName = computed(() => {
+  if (isOwnProfile.value) {
+    return user.value?.user_metadata?.display_name || user.value?.email?.split('@')[0] || 'Meu Perfil'
+  }
+  return 'Stitch Designer'
+})
+
 const posts: Post[] = [
   {
     id: 1,
@@ -36,7 +50,7 @@ const posts: Post[] = [
     id: 6,
     user_id: '1',
     content: 'Design bio-inspirado.',
-    image_url: 'https://images.unsplash.com/photo-1518977956810-4978c1bd0d97?auto=format&fit=crop&w=900&q=80'
+    image_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
   }
 ]
 </script>
@@ -56,11 +70,11 @@ const posts: Post[] = [
         <div class="flex justify-between">
           <div>
             <h2 class="text-3xl">
-              Stitch Designer
+              {{ profileName }}
             </h2>
           </div>
 
-          <div class="flex justify-between gap-2">
+          <div class="flex justify-between gap-2" v-if="!isOwnProfile">
             <UButton variant="subtle">
               Seguir
             </UButton>

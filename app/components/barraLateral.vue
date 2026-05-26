@@ -4,7 +4,7 @@ async function acessarFeed() {
 }
 
 async function acessarPerfil() {
-  navigateTo('/perfilPage')
+  navigateTo('/perfilPage/me')
 }
 
 async function acessarConversas() {
@@ -19,7 +19,7 @@ async function acessarConversas() {
       @click="acessarFeed"
     >
       <UIcon
-        name="material-symbols:dynamic-feed-sharp"
+        name="solar:home-2-bold-duotone"
         class="size-5"
       /> Feed
     </UButton>
@@ -29,7 +29,7 @@ async function acessarConversas() {
       @click="acessarConversas"
     >
       <UIcon
-        name="bx:bxs-conversation"
+        name="solar:chat-round-dots-bold-duotone"
         class="size-5"
       /> Conversas
     </UButton>
@@ -39,7 +39,7 @@ async function acessarConversas() {
       @click="acessarPerfil"
     >
       <UIcon
-        name="material-symbols:account-box"
+        name="solar:user-circle-bold-duotone"
         class="size-5"
       /> Perfil
     </UButton>

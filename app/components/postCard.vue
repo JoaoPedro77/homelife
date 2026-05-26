@@ -23,8 +23,7 @@ const posts: Post[] = [
     user_id: '3',
     display_name: 'Ana Costa',
     avatar_url: 'https://i.pravatar.cc/150?img=59',
-    content: 'Comecei a praticar meditação pela manhã e já notei menos ansiedade e mais clareza para lidar com as prioridades.',
-    image_url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80'
+    content: 'Comecei a praticar meditação pela manhã e já notei menos ansiedade e mais clareza para lidar com as prioridades.'
   },
   {
     id: 4,
@@ -47,8 +46,7 @@ const posts: Post[] = [
     user_id: '6',
     display_name: 'Tiago Moura',
     avatar_url: 'https://i.pravatar.cc/150?img=62',
-    content: 'Reduzi o uso de plástico em casa e comecei a usar potes reutilizáveis. A economia é ótima e a sensação de viver de forma mais sustentável é ainda melhor.',
-    image_url: 'https://images.unsplash.com/photo-1518977956810-4978c1bd0d97?auto=format&fit=crop&w=900&q=80'
+    content: 'Reduzi o uso de plástico em casa e comecei a usar potes reutilizáveis. A economia é ótima e a sensação de viver de forma mais sustentável é ainda melhor.'
   }
 ]
 </script>
@@ -63,8 +61,9 @@ const posts: Post[] = [
         <div class="flex flex-col w-full gap-3">
           <div class="flex items-center justify-between mb-md">
             <UButton
-              variant="outline"
+              variant="ghost"
               class="flex items-center gap-3"
+              @click="navigateTo(`/perfilPage/${post.user_id}`)"
             >
               <div class="w-12 h-12 rounded-full overflow-hidden border border-primary/30">
                 <img
@@ -73,7 +72,7 @@ const posts: Post[] = [
                   :src="post.avatar_url"
                 >
               </div>
-              <div>
+              <div class="flex flex-col items-start gap-1">
                 <h4 class="font-label-md text-label-md text-on-surface font-bold">
                   {{ post.display_name }}
                 </h4>
@@ -82,8 +81,11 @@ const posts: Post[] = [
                 </p>
               </div>
             </UButton>
-            <button class="text-on-surface-variant hover:text-primary transition-colors">
-              <span icon="material-symbols-outlined">more_horiz</span>
+            <button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+              <UIcon
+                name="solar:menu-dots-bold-duotone"
+                class="size-6"
+              />
             </button>
           </div>
           <div class="mb-md">
