@@ -14,7 +14,7 @@ useHead({
 const title = 'Home Life'
 const description = 'O lar da sua vida!'
 
-const user = useSupabaseUser()
+const { supabaseUser: user, currentUser } = useUser()
 const supabase = useSupabaseClient()
 
 useSeoMeta({
@@ -27,9 +27,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-const nomeUsuario = computed(() => {
-  return user.value?.user_metadata?.display_name ?? user.value?.email?.split('@')[0] ?? 'Usuário'
-})
+const nomeUsuario = computed(() => currentUser.value?.nome ?? 'Usuário')
 
 const logout = async () => {
   await supabase.auth.signOut()
@@ -76,8 +74,10 @@ const logout = async () => {
       </template>
     </UHeader>
 
-    <UMain>
-      <NuxtPage />
+    <UMain class="h-[calc(100vh-64px)] overflow-hidden">
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </UMain>
   </UApp>
 </template>

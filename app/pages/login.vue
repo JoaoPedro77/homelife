@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false
+})
+
 const supabase = useSupabaseClient()
 const name = ref('')
 const password = ref('')
@@ -50,7 +54,7 @@ const login = async () => {
 
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      navigateTo('/chat')
+      navigateTo('/initialPage')
     }
   } catch (err) {
     console.error('Erro inesperado:', err)

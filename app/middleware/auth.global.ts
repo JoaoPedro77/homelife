@@ -6,6 +6,6 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   if (user.value && to.path === '/login') {
-    return navigateTo('/chat')
+    return navigateTo('/initialPage')
   }
 })

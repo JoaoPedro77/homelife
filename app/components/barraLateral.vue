@@ -7,10 +7,6 @@ async function acessarPerfil() {
   navigateTo('/perfilPage')
 }
 
-async function acessarChat() {
-  navigateTo('/chat')
-}
-
 async function acessarConversas() {
   navigateTo('/conversasPage')
 }
@@ -36,16 +32,6 @@ async function acessarConversas() {
         name="bx:bxs-conversation"
         class="size-5"
       /> Conversas
-    </UButton>
-
-    <UButton
-      variant="ghost"
-      @click="acessarChat"
-    >
-      <UIcon
-        name="solar:dialog-2-bold-duotone"
-        class="size-5"
-      /> Chat
     </UButton>
 
     <UButton

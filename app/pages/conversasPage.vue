@@ -73,45 +73,40 @@ function abrirConversa(_conversa: Conversation) {
 </script>
 
 <template>
-  <div class="flex justify-center items-center gap-3 w-full">
-    <div class="flex w-[50%] gap-10">
-      <BarraLateral />
-      <div class="flex flex-col w-full gap-3">
-        <div
-          v-for="conversa in conversas"
-          :key="conversa.id"
-          class="light:shadow-[0px_0px_8px_#000b] rounded-lg cursor-pointer"
-          @click="abrirConversa(conversa)"
-        >
-          <UPageCard
-            class="flex flex-col bg-[#ff83b705] w-full"
-            :ui="{
-              container: 'p-0 sm:p-3'
-            }"
-          >
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <div class="flex items-center gap-2">
-                  <img
-                    class="rounded-full h-10 w-10"
-                    :src="conversa.participant_avatar"
-                    :alt="conversa.participant_name"
-                  >
-                  <h2>{{ conversa.participant_name }}</h2>
-                </div>
-              </div>
-              <div>
-                <p>{{ conversa.ultimo_horario }}</p>
-              </div>
+  <div class="flex flex-col w-full gap-3 mt-4">
+    <div
+      v-for="conversa in conversas"
+      :key="conversa.id"
+      class="light:shadow-[0px_0px_8px_#000b] rounded-lg cursor-pointer"
+      @click="abrirConversa(conversa)"
+    >
+      <UPageCard
+        class="flex flex-col bg-[#ff83b705] w-full"
+        :ui="{
+          container: 'p-0 sm:p-3'
+        }"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <div class="flex items-center gap-2">
+              <img
+                class="rounded-full h-10 w-10"
+                :src="conversa.participant_avatar"
+                :alt="conversa.participant_name"
+              >
+              <h2>{{ conversa.participant_name }}</h2>
             </div>
-            <div>
-              <div>
-                <p>{{ conversa.ultima_mensagem }}</p>
-              </div>
-            </div>
-          </UPageCard>
+          </div>
+          <div>
+            <p>{{ conversa.ultimo_horario }}</p>
+          </div>
         </div>
-      </div>
+        <div>
+          <div>
+            <p>{{ conversa.ultima_mensagem }}</p>
+          </div>
+        </div>
+      </UPageCard>
     </div>
   </div>
 </template>

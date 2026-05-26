@@ -42,65 +42,59 @@ const posts: Post[] = [
 </script>
 
 <template>
-  <div class="flex justify-center items-center w-full h-full p-10">
-    <div class="flex w-[80%] gap-10">
-      <BarraLateral />
+  <div class="flex flex-col gap-7 pt-10">
+    <div class="flex gap-3">
+      <div class="w-32 h-32">
+        <img
+          class="rounded-full w-full h-full object-cover"
+          src="https://i.pravatar.cc/150?img=47"
+          alt="Avatar do perfil"
+        >
+      </div>
 
-      <div class="flex flex-col justify-between gap-7">
-        <div class="flex gap-3">
-          <div class="w-32 h-32">
-            <img
-              class="rounded-full w-full h-full object-cover"
-              src="https://i.pravatar.cc/150?img=47"
-              alt="Avatar do perfil"
-            >
+      <div class="flex flex-col justify-between w-md">
+        <div class="flex justify-between">
+          <div>
+            <h2 class="text-3xl">
+              Stitch Designer
+            </h2>
           </div>
 
-          <div class="flex flex-col justify-between w-md">
-            <div class="flex justify-between">
-              <div>
-                <h2 class="text-3xl">
-                  Stitch Designer
-                </h2>
-              </div>
+          <div class="flex justify-between gap-2">
+            <UButton variant="subtle">
+              Seguir
+            </UButton>
 
-              <div class="flex justify-between gap-2">
-                <UButton variant="subtle">
-                  Seguir
-                </UButton>
-
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                >
-                  Conversar
-                </UButton>
-              </div>
-            </div>
-
-            <div>
-              <p>
-                Explorando a intersecção entre moda digital e design gerativo.
-              </p>
-            </div>
+            <UButton
+              color="neutral"
+              variant="outline"
+            >
+              Conversar
+            </UButton>
           </div>
         </div>
 
-        <UPageGrid>
-          <div
-            v-for="post in posts"
-            :key="post.id"
-            class="group relative profile-grid-item aspect-square rounded-xl overflow-hidden cursor-pointer"
-          >
-            <img
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              :src="post.image_url"
-              :alt="post.content"
-            >
-          </div>
-        </UPageGrid>
+        <div>
+          <p>
+            Explorando a intersecção entre moda digital e design gerativo.
+          </p>
+        </div>
       </div>
     </div>
+
+    <UPageGrid>
+      <div
+        v-for="post in posts"
+        :key="post.id"
+        class="group relative profile-grid-item aspect-square rounded-xl overflow-hidden cursor-pointer"
+      >
+        <img
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          :src="post.image_url"
+          :alt="post.content"
+        >
+      </div>
+    </UPageGrid>
   </div>
 </template>
 
