@@ -14,7 +14,7 @@ useHead({
 const title = 'Home Life'
 const description = 'O lar da sua vida!'
 
-const { supabaseUser: user, currentUser } = useUser()
+const { supabaseUser: user, currentUser } = usePerfil()
 const supabase = useSupabaseClient()
 
 useSeoMeta({

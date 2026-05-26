@@ -1,114 +1,111 @@
 <script setup lang="ts">
+import { useConversas } from '~/composables/useConversas'
 import type { Conversa } from '~/types'
 
-const conversas: Conversa[] = [
-  {
-    id: 1,
-    user1_id: 'me',
-    user2_id: '1',
-    outro_participante: { id: '1', nome: 'Mariana Silva', avatar_url: 'https://i.pravatar.cc/150?img=12' },
-    ultima_mensagem: { id: 1, nome: 'Mariana Silva', conteudo: 'Claro! Vamos agendar para amanhã às 10h?', criado_em: '09:24' }
-  },
-  {
-    id: 2,
-    user1_id: 'me',
-    user2_id: '2',
-    outro_participante: { id: '2', nome: 'Lucas Almeida', avatar_url: 'https://i.pravatar.cc/150?img=24' },
-    ultima_mensagem: { id: 2, nome: 'Lucas Almeida', conteudo: 'O relatório já está pronto e envio em breve.', criado_em: '08:57' }
-  },
-  {
-    id: 3,
-    user1_id: 'me',
-    user2_id: '3',
-    outro_participante: { id: '3', nome: 'Ana Costa', avatar_url: 'https://i.pravatar.cc/150?img=33' },
-    ultima_mensagem: { id: 3, nome: 'Ana Costa', conteudo: 'Adorei a sugestão de receitas, obrigada!', criado_em: 'Ontem' }
-  },
-  {
-    id: 4,
-    user1_id: 'me',
-    user2_id: '4',
-    outro_participante: { id: '4', nome: 'Rafael Pereira', avatar_url: 'https://i.pravatar.cc/150?img=45' },
-    ultima_mensagem: { id: 4, nome: 'Rafael Pereira', conteudo: 'Podemos conversar sobre o projeto na próxima semana?', criado_em: 'Seg' }
-  },
-  {
-    id: 5,
-    user1_id: 'me',
-    user2_id: '5',
-    outro_participante: { id: '5', nome: 'Beatriz Santos', avatar_url: 'https://i.pravatar.cc/150?img=52' },
-    ultima_mensagem: { id: 5, nome: 'Beatriz Santos', conteudo: 'Vou preparar os documentos e te envio até o fim do dia.', criado_em: 'Hoje' }
-  },
-  {
-    id: 6,
-    user1_id: 'me',
-    user2_id: '6',
-    outro_participante: { id: '6', nome: 'Fernando Lima', avatar_url: 'https://i.pravatar.cc/150?img=66' },
-    ultima_mensagem: { id: 6, nome: 'Fernando Lima', conteudo: 'Ainda não recebi o comprovante, pode reenviar?', criado_em: '07:40' }
-  },
-  {
-    id: 7,
-    user1_id: 'me',
-    user2_id: '7',
-    outro_participante: { id: '7', nome: 'Camila Rocha', avatar_url: 'https://i.pravatar.cc/150?img=70' },
-    ultima_mensagem: { id: 7, nome: 'Camila Rocha', conteudo: 'Sim, eu confirmo a presença e te aviso até amanhã.', criado_em: 'Sex' }
-  },
-  {
-    id: 8,
-    user1_id: 'me',
-    user2_id: '8',
-    outro_participante: { id: '8', nome: 'Thiago Nunes', avatar_url: 'https://i.pravatar.cc/150?img=81' },
-    ultima_mensagem: { id: 8, nome: 'Thiago Nunes', conteudo: 'O evento foi incrível, vamos planejar o próximo ainda este mês.', criado_em: 'Qui' }
-  },
-  {
-    id: 9,
-    user1_id: 'me',
-    user2_id: '9',
-    outro_participante: { id: '9', nome: 'Isabela Moura', avatar_url: 'https://i.pravatar.cc/150?img=95' },
-    ultima_mensagem: { id: 9, nome: 'Isabela Moura', conteudo: 'Ah, ótimo! Me marcando no calendário, por favor.', criado_em: '14:12' }
-  }
-]
+const { listaConversas, carregando, carregarConversas } = useConversas()
 
-function abrirConversa(_conversa: Conversa) {
-  navigateTo('/chat')
+onMounted(async () => {
+  await carregarConversas()
+})
+
+function abrirConversa(conversa: Conversa) {
+  navigateTo(`/chat/${conversa.id}`)
 }
 </script>
 
 <template>
   <div class="flex flex-col w-full gap-3 mt-4">
+    <div class="flex items-center justify-between pb-3 border-b border-neutral-500/20 mb-2 shrink-0">
+      <h1 class="text-2xl font-bold text-on-surface">
+        Minhas Conversas
+      </h1>
+    </div>
+
+    <!-- Estado de Carregamento -->
     <div
-      v-for="conversa in conversas"
-      :key="conversa.id"
-      class="light:shadow-[0px_0px_8px_#000b] rounded-lg cursor-pointer"
-      @click="abrirConversa(conversa)"
+      v-if="carregando"
+      class="flex flex-col gap-3"
     >
-      <UPageCard
-        class="flex flex-col bg-[#ff83b705] w-full"
-        :ui="{
-          container: 'p-0 sm:p-3'
-        }"
+      <div
+        v-for="n in 3"
+        :key="n"
+        class="animate-pulse flex gap-3 p-4 bg-[#ff83b705] rounded-xl border border-neutral-500/10"
       >
-        <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            <div class="flex items-center gap-2">
-              <img
-                class="rounded-full h-10 w-10"
-                :src="conversa.outro_participante?.avatar_url"
-                :alt="conversa.outro_participante?.nome"
-              >
-              <h2>{{ conversa.outro_participante?.nome }}</h2>
+        <div class="rounded-full h-12 w-12 bg-neutral-500/20 shrink-0" />
+        <div class="flex-1 flex flex-col justify-center gap-2">
+          <div class="h-4 bg-neutral-500/20 rounded w-1/3" />
+          <div class="h-3 bg-neutral-500/20 rounded w-2/3" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado Vazio (Sem conversas) -->
+    <div
+      v-else-if="listaConversas.length === 0"
+      class="flex flex-col items-center justify-center py-16 px-4 text-center"
+    >
+      <UIcon
+        name="solar:chat-round-line-bold-duotone"
+        class="size-16 text-primary/40 mb-4"
+      />
+      <h3 class="text-lg font-bold text-on-surface">
+        Nenhuma conversa por aqui
+      </h3>
+      <p class="text-sm text-neutral-400 max-w-sm mt-1 leading-relaxed">
+        Visite o perfil de outros criadores e clique em "Conversar" para começar a bater papo!
+      </p>
+      <UButton
+        class="mt-6 font-semibold"
+        variant="outline"
+        @click="navigateTo('/initialPage')"
+      >
+        Ir para o Feed
+      </UButton>
+    </div>
+
+    <!-- Lista de Conversas Ativas -->
+    <div
+      v-else
+      class="flex flex-col gap-3"
+    >
+      <div
+        v-for="conversa in listaConversas"
+        :key="conversa.id"
+        class="light:shadow-[0px_0px_8px_#000b] rounded-xl cursor-pointer hover:bg-neutral-500/5 transition-all duration-300 border border-neutral-500/10"
+        @click="abrirConversa(conversa)"
+      >
+        <UPageCard
+          class="flex flex-col bg-[#ff83b705] w-full"
+          :ui="{
+            container: 'p-4 sm:p-5'
+          }"
+        >
+          <div class="flex justify-between items-center w-full">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="w-12 h-12 rounded-full overflow-hidden border border-primary/20 shrink-0">
+                <img
+                  class="h-full w-full object-cover"
+                  :src="conversa.outro_participante?.avatar_url"
+                  :alt="conversa.outro_participante?.nome"
+                >
+              </div>
+              <div class="flex flex-col min-w-0 flex-1">
+                <h2 class="font-bold text-sm leading-none text-on-surface truncate">
+                  {{ conversa.outro_participante?.nome }}
+                </h2>
+                <p class="text-xs text-neutral-400 truncate mt-2 pr-4 leading-normal">
+                  {{ conversa.ultima_mensagem?.conteudo || 'Nenhuma mensagem gravada' }}
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-[10px] text-neutral-500">
+                {{ conversa.ultima_mensagem?.criado_em || '' }}
+              </p>
             </div>
           </div>
-          <div>
-            <p>{{ conversa.ultima_mensagem?.criado_em }}</p>
-          </div>
-        </div>
-        <div>
-          <div>
-            <p>{{ conversa.ultima_mensagem?.conteudo }}</p>
-          </div>
-        </div>
-      </UPageCard>
+        </UPageCard>
+      </div>
     </div>
   </div>
 </template>
-
-<style></style>
