@@ -1,9 +1,9 @@
-import type { User } from '~/types'
+import type { Perfil } from '~/types'
 
 export const useUser = () => {
   const supabaseUser = useSupabaseUser()
 
-  const currentUser = computed<User | null>(() => {
+  const currentUser = computed<Perfil | null>(() => {
     if (!supabaseUser.value) return null
     return {
       id: supabaseUser.value.id,

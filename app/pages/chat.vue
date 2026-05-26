@@ -27,7 +27,7 @@ const handleEnviar = async () => {
   if (!novaMensagem.value.trim()) return
   const texto = novaMensagem.value
   novaMensagem.value = ''
-  
+
   const sucesso = await enviarMensagem(texto)
   if (!sucesso) {
     novaMensagem.value = texto
@@ -83,7 +83,7 @@ onUnmounted(() => {
         </div>
       </div>
     </UScrollArea>
-    
+
     <div class="w-full shrink-0 bg-transparent mt-2">
       <UForm
         class="flex flex-row gap-2 items-end backdrop-blur-xl p-2 rounded-2xl border border-neutral-500/30 shadow-xl"

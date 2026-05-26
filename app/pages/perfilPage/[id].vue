@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Post } from '~/types'
+import type { Postagem } from '~/types'
 
 const route = useRoute()
 const user = useSupabaseUser()
@@ -15,42 +15,42 @@ const profileName = computed(() => {
   return 'Stitch Designer'
 })
 
-const posts: Post[] = [
+const posts: Postagem[] = [
   {
     id: 1,
     user_id: '1',
-    content: 'Explorando a intersecção entre moda digital e design gerativo.',
-    image_url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Explorando a intersecção entre moda digital e design gerativo.',
+    imagem_url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80'
   },
   {
     id: 2,
     user_id: '1',
-    content: 'Novas texturas e padrões surgindo.',
-    image_url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Novas texturas e padrões surgindo.',
+    imagem_url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
   },
   {
     id: 3,
     user_id: '1',
-    content: 'Arte generativa em movimento.',
-    image_url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Arte generativa em movimento.',
+    imagem_url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80'
   },
   {
     id: 4,
     user_id: '1',
-    content: 'Minimalismo e cores escuras.',
-    image_url: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Minimalismo e cores escuras.',
+    imagem_url: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80'
   },
   {
     id: 5,
     user_id: '1',
-    content: 'Coleção de outono inspirada no espaço.',
-    image_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Coleção de outono inspirada no espaço.',
+    imagem_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
   },
   {
     id: 6,
     user_id: '1',
-    content: 'Design bio-inspirado.',
-    image_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
+    conteudo: 'Design bio-inspirado.',
+    imagem_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
   }
 ]
 </script>
@@ -74,7 +74,10 @@ const posts: Post[] = [
             </h2>
           </div>
 
-          <div class="flex justify-between gap-2" v-if="!isOwnProfile">
+          <div
+            v-if="!isOwnProfile"
+            class="flex justify-between gap-2"
+          >
             <UButton variant="subtle">
               Seguir
             </UButton>
@@ -104,8 +107,8 @@ const posts: Post[] = [
       >
         <img
           class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          :src="post.image_url"
-          :alt="post.content"
+          :src="post.imagem_url"
+          :alt="post.conteudo"
         >
       </div>
     </UPageGrid>

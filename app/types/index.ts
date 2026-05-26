@@ -1,39 +1,35 @@
+export type Perfil = {
+  id: string
+  nome: string
+  avatar_url?: string
+  criado_em?: string
+}
+
+export type Postagem = {
+  id: number
+  user_id: string
+  conteudo: string
+  imagem_url?: string
+  criado_em?: string
+  // Usado quando retornamos os dados "juntos" do banco (JOIN)
+  perfil?: Perfil
+}
+
+export type Conversa = {
+  id: number
+  user1_id: string
+  user2_id: string
+  criado_em?: string
+  // Dados que preenchemos no frontend para exibir na lista:
+  outro_participante?: Perfil
+  ultima_mensagem?: Mensagem
+}
+
 export type Mensagem = {
   id: number
-  conversation_id?: number
+  id_conversa?: number
   nome: string
   conteudo: string
   user_id?: string
   criado_em?: string
-}
-
-export type User = {
-  id: string
-  nome: string
-}
-
-export type Profile = {
-  id: string
-  display_name: string
-  avatar_url?: string
-  created_at?: string
-}
-
-export type Post = {
-  id: number
-  user_id: string
-  content: string
-  image_url?: string
-  created_at?: string
-  display_name?: string
-  avatar_url?: string
-}
-
-export type Conversation = {
-  id: number
-  created_at?: string
-  participant_name?: string
-  participant_avatar?: string
-  ultima_mensagem?: string
-  ultimo_horario?: string
 }
