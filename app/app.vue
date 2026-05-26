@@ -11,8 +11,11 @@ useHead({
   }
 })
 
-const title = 'Home Chat'
-const description = 'O lar da conversa!'
+const title = 'Home Life'
+const description = 'O lar da sua vida!'
+
+const user = useSupabaseUser()
+const supabase = useSupabaseClient()
 
 useSeoMeta({
   title,
@@ -23,7 +26,11 @@ useSeoMeta({
   twitterImage: '/favicon.ico',
   twitterCard: 'summary_large_image'
 })
-const supabase = useSupabaseClient()
+
+const nomeUsuario = computed(() => {
+  return user.value?.user_metadata?.display_name ?? user.value?.email?.split('@')[0] ?? 'Usuário'
+})
+
 const logout = async () => {
   await supabase.auth.signOut()
   navigateTo('/login')
@@ -41,18 +48,25 @@ const logout = async () => {
           to="/"
         >
           <LogoTexto
-            titulo="Home Chat"
-            descricao="O lar da conversa!"
+            titulo="Home Life"
+            descricao="O lar da sua vida!"
             foto="favicon.png"
           />
         </NuxtLink>
       </template>
 
       <template #right>
+        <span
+          v-if="user"
+          class="text-sm font-medium text-(--ui-text-muted) hidden sm:inline"
+        >
+          {{ nomeUsuario }}
+        </span>
+
         <UColorModeButton />
 
         <UButton
-          v-if="$route.path === '/chat'"
+          v-if="user"
           icon="solar:logout-3-bold-duotone"
           aria-label="Logout"
           color="neutral"

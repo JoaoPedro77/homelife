@@ -69,7 +69,7 @@ const login = async () => {
       <template #title>
         <LogoTexto
           titulo="Login"
-          descricao="entre no lar da conversa"
+          descricao="entre no lar da sua vida"
           foto="entrar.png"
         />
       </template>
