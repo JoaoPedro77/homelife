@@ -1,14 +1,21 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onBeforeUnmount, ref, watchEffect } from 'vue'
 import { usePostagens } from '~/composables/usePostagens'
+import { usePerfil } from '~/composables/usePerfil'
 
 const postText = ref('')
 const selectedImageFile = ref<File | null>(null)
 const imagePreviewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
-const router = useRouter()
-const { posts, perfilPadrao, criarPostagem, podeCriar, mensagemMaxima } = usePostagens()
+
+const { currentUser, perfil, carregarPerfil } = usePerfil()
+const { posts, perfilPadrao, criarPostagem, podeCriar, mensagemMaxima } = usePostagens(perfil)
+
+watchEffect(() => {
+  if (currentUser.value?.id) {
+    carregarPerfil(currentUser.value.id)
+  }
+})
 
 const isPostDisabled = computed(
   () => !podeCriar(postText.value) && !selectedImageFile.value
@@ -51,7 +58,7 @@ const limparImagemSelecionada = () => {
 }
 
 const enviarPostagem = async () => {
-  const postagemCriada = await criarPostagem(postText.value, perfilPadrao, selectedImageFile.value ?? undefined)
+  const postagemCriada = await criarPostagem(postText.value, selectedImageFile.value ?? undefined)
 
   if (!postagemCriada) {
     return
@@ -59,10 +66,6 @@ const enviarPostagem = async () => {
 
   postText.value = ''
   limparImagemSelecionada()
-}
-
-const navegarParaPerfil = (userId: string) => {
-  router.push(`/perfilPage/${userId}`)
 }
 
 onBeforeUnmount(() => {
@@ -79,8 +82,8 @@ onBeforeUnmount(() => {
             <img
               alt="User Avatar"
               class="w-full h-full object-cover"
-              :src="perfilPadrao.avatar_url"
-            />
+              :src="perfilPadrao?.avatar_url"
+            >
           </div>
           <UForm class="flex-1 flex items-center gap-2">
             <UInput
@@ -109,17 +112,22 @@ onBeforeUnmount(() => {
               accept="image/*"
               class="hidden"
               @change="onImageChange"
-            />
+            >
           </UForm>
         </div>
-        <div v-if="imagePreviewUrl" class="mt-4 rounded-xl overflow-hidden border border-white/10">
+        <div
+          v-if="imagePreviewUrl"
+          class="mt-4 rounded-xl overflow-hidden border border-white/10"
+        >
           <img
             :src="imagePreviewUrl"
             alt="Pré-visualização da imagem selecionada"
             class="w-full h-64 object-cover"
-          />
+          >
           <div class="flex items-center justify-between gap-3 p-3 bg-surface-container">
-            <p class="font-label-sm text-on-surface-variant truncate">Imagem selecionada</p>
+            <p class="font-label-sm text-on-surface-variant truncate">
+              Imagem selecionada
+            </p>
             <button
               type="button"
               class="text-primary hover:underline"
@@ -155,7 +163,10 @@ onBeforeUnmount(() => {
           :post="post"
         />
 
-        <div v-if="posts.length === 0" class="rounded-xl border border-white/10 bg-surface-container p-6 text-center">
+        <div
+          v-if="posts.length === 0"
+          class="rounded-xl border border-white/10 bg-surface-container p-6 text-center"
+        >
           <p class="font-body-md text-on-surface-variant">
             Crie sua primeira postagem usando os campos acima. Quando você postar, ela aparecerá aqui como um card.
           </p>

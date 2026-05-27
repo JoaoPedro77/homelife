@@ -27,7 +27,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-const nomeUsuario = computed(() => currentUser.value?.nome ?? 'Usuário')
+const nomeUsuario = computed(() => currentUser.value?.nome)
 
 const logout = async () => {
   await supabase.auth.signOut()

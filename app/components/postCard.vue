@@ -26,7 +26,7 @@ const navegarParaPerfil = (userId: string) => {
               alt="Avatar do autor"
               class="w-full h-full object-cover"
               :src="post.perfil?.avatar_url"
-            />
+            >
           </div>
           <div class="flex flex-col items-start gap-1">
             <h4 class="font-label-md text-label-md text-on-surface font-bold">
@@ -57,10 +57,8 @@ const navegarParaPerfil = (userId: string) => {
           :src="post.imagem_url"
           :alt="`Imagem da postagem de ${post.perfil?.nome}`"
           class="w-full h-full object-cover"
-        />
+        >
       </div>
     </div>
   </UPageCard>
 </template>
-
-<style></style>

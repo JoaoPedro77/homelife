@@ -4,7 +4,7 @@ import { usePerfil } from './usePerfil'
 
 export const useConversas = () => {
   const supabase = useSupabaseClient()
-  const { currentUser, obterAvatarUrl } = usePerfil()
+  const { currentUser } = usePerfil()
   const listaConversas = ref<Conversa[]>([])
   const carregando = ref(false)
 
@@ -41,7 +41,7 @@ export const useConversas = () => {
       perfisData?.forEach((p: any) => {
         const perfilComAvatar = {
           ...p,
-          avatar_url: obterAvatarUrl(p)
+          avatar_url: p.avatar_url
         }
         perfisMap.set(p.id, perfilComAvatar)
       })
@@ -67,12 +67,7 @@ export const useConversas = () => {
       listaConversas.value = conversasData.map((c: any) => {
         const outroId = c.user1_id === me ? c.user2_id : c.user1_id
 
-        // Se o perfil do outro não existir ainda no banco, cria um perfil padrão provisório
-        const outro = perfisMap.get(outroId) || {
-          id: outroId,
-          nome: 'Usuário',
-          avatar_url: `https://ui-avatars.com/api/?name=U&background=random`
-        }
+        const outro = perfisMap.get(outroId)
 
         const ultimaMsg = ultimasMensagensMap.get(c.id)
 
@@ -138,7 +133,6 @@ export const useConversas = () => {
     listaConversas,
     carregando,
     carregarConversas,
-    buscarOuCriarConversa,
-    obterAvatarUrl
+    buscarOuCriarConversa
   }
 }

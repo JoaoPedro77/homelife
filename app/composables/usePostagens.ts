@@ -1,14 +1,8 @@
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import type { Postagem, Perfil } from '~/types'
 
 const posts = ref<Postagem[]>([])
 const nextPostId = ref(1)
-
-const perfilPadrao: Perfil = {
-  id: '0',
-  nome: 'Você',
-  avatar_url: 'https://i.pravatar.cc/150?img=12'
-}
 
 const validarConteudo = (conteudo: string, imagemArquivo?: File) => {
   const texto = conteudo.trim()
@@ -35,49 +29,47 @@ const converterImagemParaDataUrl = (arquivo: File): Promise<string | null> => {
   })
 }
 
-const montarPostagem = (
-  conteudo: string,
-  perfil: Perfil,
-  imagem_url?: string
-): Postagem => ({
-  id: nextPostId.value,
-  user_id: perfil.id,
-  conteudo: conteudo.trim(),
-  criado_em: new Date().toISOString(),
-  perfil,
-  imagem_url
-})
-
-const criarPostagem = async (
-  conteudo: string,
-  perfil: Perfil = perfilPadrao,
-  imagemArquivo?: File
-) => {
-  if (!validarConteudo(conteudo, imagemArquivo)) {
-    return null
-  }
-
-  let imagem_url: string | undefined
-  if (imagemArquivo) {
-    const resultado = await converterImagemParaDataUrl(imagemArquivo)
-    if (!resultado) {
-      return null
-    }
-    imagem_url = resultado
-  }
-
-  const novaPostagem = montarPostagem(conteudo, perfil, imagem_url)
-  posts.value = [novaPostagem, ...posts.value]
-  nextPostId.value += 1
-  return novaPostagem
-}
-
 const limparPostagens = () => {
   posts.value = []
   nextPostId.value = 1
 }
 
-export const usePostagens = () => {
+export const usePostagens = (usuario?: Ref<Perfil | null>) => {
+  const perfilPadrao = computed(() => usuario?.value ?? null)
+
+  const montarPostagem = (conteudo: string, imagem_url?: string): Postagem | null => {
+    if (!perfilPadrao.value) return null
+    return {
+      id: nextPostId.value,
+      user_id: perfilPadrao.value.id,
+      conteudo: conteudo.trim(),
+      criado_em: new Date().toISOString(),
+      perfil: perfilPadrao.value,
+      imagem_url
+    }
+  }
+
+  const criarPostagem = async (conteudo: string, imagemArquivo?: File) => {
+    if (!perfilPadrao.value) return null
+    if (!validarConteudo(conteudo, imagemArquivo)) {
+      return null
+    }
+
+    let imagem_url: string | undefined
+    if (imagemArquivo) {
+      const resultado = await converterImagemParaDataUrl(imagemArquivo)
+      if (!resultado) {
+        return null
+      }
+      imagem_url = resultado
+    }
+
+    const novaPostagem = montarPostagem(conteudo, imagem_url)
+    posts.value = [novaPostagem!, ...posts.value]
+    nextPostId.value += 1
+    return novaPostagem
+  }
+
   const mensagemMaxima = computed(() => 500)
   const podeCriar = (conteudo: string) => validarConteudo(conteudo)
 

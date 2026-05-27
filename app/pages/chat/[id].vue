@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useChat } from '~/composables/useChat'
-import { useConversas } from '~/composables/useConversas'
 import type { Perfil } from '~/types'
 
 const route = useRoute()
@@ -16,8 +15,6 @@ const {
   inscreverRealtime,
   desinscreverRealtime
 } = useChat()
-
-const { obterAvatarUrl } = useConversas()
 
 const supabase = useSupabaseClient()
 const outroParticipante = ref<Perfil | null>(null)
@@ -73,7 +70,7 @@ onMounted(async () => {
         if (perfilData) {
           outroParticipante.value = {
             ...perfilData,
-            avatar_url: obterAvatarUrl(perfilData)
+            avatar_url: perfilData.avatar_url
           }
         }
       }
