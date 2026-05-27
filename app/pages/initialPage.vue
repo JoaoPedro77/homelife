@@ -9,13 +9,22 @@ const imagePreviewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 const { currentUser, perfil, carregarPerfil } = usePerfil()
-const { posts, perfilPadrao, criarPostagem, podeCriar, mensagemMaxima } = usePostagens(perfil)
+const { posts, perfilPadrao, criarPostagem, apagarPostagem, podeCriar, mensagemMaxima } = usePostagens(perfil)
 
 watchEffect(() => {
   if (currentUser.value?.id) {
     carregarPerfil(currentUser.value.id)
   }
 })
+
+const handleDeletePost = async (postId: number) => {
+  if (!postId) return
+
+  const sucesso = await apagarPostagem(postId)
+  if (!sucesso) {
+    console.warn('Não foi possível apagar a postagem', postId)
+  }
+}
 
 const isPostDisabled = computed(
   () => !podeCriar(postText.value) && !selectedImageFile.value
@@ -161,6 +170,7 @@ onBeforeUnmount(() => {
           v-for="post in posts"
           :key="post.id"
           :post="post"
+          @delete-post="handleDeletePost(post.id)"
         />
 
         <div

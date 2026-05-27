@@ -1,14 +1,25 @@
 <script lang="ts" setup>
-import { toRef } from 'vue'
+import { computed, toRef } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Postagem } from '~/types'
+import { usePerfil } from '~/composables/usePerfil'
 
 const props = defineProps<{ post: Postagem }>()
+const emit = defineEmits<{
+  (event: 'delete-post', postId: number): void
+}>()
 const post = toRef(props, 'post')
 const router = useRouter()
+const { currentUser } = usePerfil()
+
+const isMyPost = computed(() => currentUser.value?.id === post.value.user_id)
 
 const navegarParaPerfil = (userId: string) => {
   router.push(`/perfilPage/${userId}`)
+}
+
+const handleDelete = () => {
+  emit('delete-post', post.value.id)
 }
 </script>
 
@@ -37,12 +48,25 @@ const navegarParaPerfil = (userId: string) => {
             </p>
           </div>
         </button>
-        <button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
-          <UIcon
-            name="solar:menu-dots-bold-duotone"
-            class="size-6"
-          />
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            v-if="isMyPost"
+            type="button"
+            class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center"
+            @click.prevent.stop="handleDelete"
+          >
+            <UIcon
+              name="solar:trash-bin-bold-duotone"
+              class="size-6"
+            />
+          </button>
+          <button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+            <UIcon
+              name="solar:menu-dots-bold-duotone"
+              class="size-6"
+            />
+          </button>
+        </div>
       </div>
       <div class="mb-md">
         <p class="font-body-md text-on-surface leading-relaxed">
