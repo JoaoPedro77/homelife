@@ -1,21 +1,24 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, ref, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { usePostagens } from '~/composables/usePostagens'
 import { usePerfil } from '~/composables/usePerfil'
+import { useAuth } from '~/composables/useAuth'
 
 const postText = ref('')
 const selectedImageFile = ref<File | null>(null)
 const imagePreviewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 
-const { currentUser, perfil, carregarPerfil } = usePerfil()
-const { posts, perfilPadrao, criarPostagem, apagarPostagem, podeCriar, mensagemMaxima } = usePostagens(perfil)
+const { currentUser } = useAuth()
+const { perfil, carregarPerfil } = usePerfil()
+const { posts, carregando, perfilPadrao, criarPostagem, apagarPostagem, podeCriar, mensagemMaxima, carregarPostagens } = usePostagens(perfil)
 
-watchEffect(() => {
-  if (currentUser.value?.id) {
-    carregarPerfil(currentUser.value.id)
+watch(currentUser, async (val) => {
+  if (val?.id) {
+    await carregarPerfil(val.id)
+    await carregarPostagens()
   }
-})
+}, { immediate: true })
 
 const handleDeletePost = async (postId: number) => {
   if (!postId) return
@@ -166,24 +169,42 @@ onBeforeUnmount(() => {
 
     <div class="flex flex-col items-center w-full">
       <div class="w-full sm:w-lg flex flex-col gap-4">
-        <postCard
-          v-for="post in posts"
-          :key="post.id"
-          :post="post"
-          @delete-post="handleDeletePost(post.id)"
-        />
+        <template v-if="carregando">
+          <div
+            v-for="n in 3"
+            :key="n"
+            class="flex flex-col gap-3 p-4 rounded-xl border border-neutral-500/10"
+          >
+            <div class="flex items-center gap-3">
+              <USkeleton class="size-12 rounded-full" />
+              <div class="flex flex-col gap-2 flex-1">
+                <USkeleton class="h-4 w-1/3" />
+                <USkeleton class="h-3 w-1/4" />
+              </div>
+            </div>
+            <USkeleton class="h-4 w-full" />
+            <USkeleton class="h-4 w-2/3" />
+          </div>
+        </template>
 
-        <div
-          v-if="posts.length === 0"
-          class="rounded-xl border border-white/10 bg-surface-container p-6 text-center"
-        >
-          <p class="font-body-md text-on-surface-variant">
-            Crie sua primeira postagem usando os campos acima. Quando você postar, ela aparecerá aqui como um card.
-          </p>
-        </div>
+        <template v-else>
+          <postCard
+            v-for="post in posts"
+            :key="post.id"
+            :post="post"
+            @delete-post="handleDeletePost(post.id)"
+          />
+
+          <div
+            v-if="posts.length === 0"
+            class="rounded-xl border border-white/10 bg-surface-container p-6 text-center"
+          >
+            <p class="font-body-md text-on-surface-variant">
+              Crie sua primeira postagem usando os campos acima. Quando você postar, ela aparecerá aqui como um card.
+            </p>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
-
-<style></style>

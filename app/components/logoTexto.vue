@@ -1,18 +1,9 @@
 <script setup lang="ts">
-defineProps({
-  titulo: {
-    type: String,
-    required: true
-  },
-  descricao: {
-    type: String,
-    required: true
-  },
-  foto: {
-    type: String,
-    required: true
-  }
-})
+defineProps<{
+  titulo: string
+  descricao: string
+  foto: string
+}>()
 </script>
 
 <template>

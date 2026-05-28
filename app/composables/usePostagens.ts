@@ -1,9 +1,11 @@
-import { computed, ref, type Ref, watch } from 'vue'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { computed, ref, type Ref } from 'vue'
 import type { Postagem, Perfil } from '~/types'
 
 export const usePostagens = (usuario?: Ref<Perfil | null>) => {
   const supabase = useSupabaseClient()
   const posts = ref<Postagem[]>([])
+  const carregando = ref(false)
   const perfilPadrao = computed(() => usuario?.value ?? null)
 
   const validarConteudo = (conteudo: string, imagemArquivo?: File) => {
@@ -31,7 +33,6 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
     })
   }
 
-  // ETAPA DOC: O mapeador agora foca totalmente nos dados vindos do criador do post (p.perfis)
   const mapPostagem = (p: any): Postagem => ({
     id: p.id,
     user_id: p.user_id,
@@ -47,10 +48,9 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
       : undefined
   })
 
-  // ETAPA DOC: Modificado para carregar dados globalmente de forma pública
   const carregarPostagens = async () => {
+    carregando.value = true
     try {
-      // Removemos o filtro de ID (.eq) para trazer as postagens de todo mundo
       const { data, error } = await (supabase.from('postagens') as any)
         .select('*, perfis(*)')
         .order('id', { ascending: false })
@@ -64,6 +64,8 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
     } catch (e) {
       console.error('Erro ao carregar postagens:', e)
       posts.value = []
+    } finally {
+      carregando.value = false
     }
   }
 
@@ -122,7 +124,7 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
         return false
       }
 
-      posts.value = posts.value.filter((post) => post.id !== postId)
+      posts.value = posts.value.filter(post => post.id !== postId)
       return true
     } catch (e) {
       console.error('Erro ao apagar postagem:', e)
@@ -134,20 +136,12 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
     posts.value = []
   }
 
-  // ETAPA DOC: O vigia agora dispara o carregamento do feed independente de quem logou ou deslogou
-  watch(
-    perfilPadrao,
-    async () => {
-      await carregarPostagens()
-    },
-    { immediate: true }
-  )
-
   const mensagemMaxima = computed(() => 500)
   const podeCriar = (conteudo: string) => validarConteudo(conteudo)
 
   return {
     posts,
+    carregando,
     perfilPadrao,
     criarPostagem,
     apagarPostagem,

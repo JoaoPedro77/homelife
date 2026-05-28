@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Conversa, Perfil, Mensagem } from '~/types'
-import { usePerfil } from './usePerfil'
 
 export const useConversas = () => {
   const supabase = useSupabaseClient()
-  const { currentUser } = usePerfil()
+  const { currentUser } = useAuth()
   const listaConversas = ref<Conversa[]>([])
   const carregando = ref(false)
 

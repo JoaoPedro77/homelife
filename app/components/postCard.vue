@@ -1,21 +1,18 @@
 <script lang="ts" setup>
 import { computed, toRef } from 'vue'
-import { useRouter } from 'vue-router'
 import type { Postagem } from '~/types'
-import { usePerfil } from '~/composables/usePerfil'
 
 const props = defineProps<{ post: Postagem }>()
 const emit = defineEmits<{
   (event: 'delete-post', postId: number): void
 }>()
 const post = toRef(props, 'post')
-const router = useRouter()
-const { currentUser } = usePerfil()
+const { currentUser } = useAuth()
 
 const isMyPost = computed(() => currentUser.value?.id === post.value.user_id)
 
 const navegarParaPerfil = (userId: string) => {
-  router.push(`/perfilPage/${userId}`)
+  navigateTo(`/perfilPage/${userId}`)
 }
 
 const handleDelete = () => {
@@ -24,16 +21,15 @@ const handleDelete = () => {
 
 const formatarData = (dataString: string) => {
   if (!dataString) return ''
-  
+
   const data = new Date(dataString)
-  
+
   return new Intl.DateTimeFormat('pt-BR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
   }).format(data)
-  }
-
+}
 </script>
 
 <template>
@@ -57,7 +53,7 @@ const formatarData = (dataString: string) => {
               {{ post.perfil?.nome }}
             </h4>
             <p class="font-label-sm text-label-sm text-on-surface-variant">
-              {{ formatarData(post.criado_em!)}}
+              {{ formatarData(post.criado_em!) }}
             </p>
           </div>
         </button>

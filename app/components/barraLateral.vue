@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-async function acessarFeed() {
+function acessarFeed() {
   navigateTo('/initialPage')
 }
 
-async function acessarPerfil() {
+function acessarPerfil() {
   navigateTo('/perfilPage/me')
 }
 
-async function acessarConversas() {
+function acessarConversas() {
   navigateTo('/conversasPage')
 }
 </script>
@@ -50,5 +50,3 @@ async function acessarConversas() {
     class="h-[90]"
   />
 </template>
-
-<style></style>

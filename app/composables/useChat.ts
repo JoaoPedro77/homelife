@@ -2,7 +2,7 @@ import type { Mensagem } from '~/types'
 
 export const useChat = () => {
   const supabase = useSupabaseClient()
-  const { currentUser } = usePerfil()
+  const { currentUser } = useAuth()
   const listaMensagens = ref<Mensagem[]>([])
 
   const inicializaChat = async (idConversa: number) => {
