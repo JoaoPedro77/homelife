@@ -21,6 +21,19 @@ const navegarParaPerfil = (userId: string) => {
 const handleDelete = () => {
   emit('delete-post', post.value.id)
 }
+
+const formatarData = (dataString: string) => {
+  if (!dataString) return ''
+  
+  const data = new Date(dataString)
+  
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(data)
+  }
+
 </script>
 
 <template>
@@ -44,7 +57,7 @@ const handleDelete = () => {
               {{ post.perfil?.nome }}
             </h4>
             <p class="font-label-sm text-label-sm text-on-surface-variant">
-              @{{ post.perfil?.nome?.toLowerCase().replace(/\s+/g, '') }} • 5 horas atrás
+              {{ formatarData(post.criado_em!)}}
             </p>
           </div>
         </button>
@@ -56,13 +69,7 @@ const handleDelete = () => {
             @click.prevent.stop="handleDelete"
           >
             <UIcon
-              name="solar:trash-bin-bold-duotone"
-              class="size-6"
-            />
-          </button>
-          <button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
-            <UIcon
-              name="solar:menu-dots-bold-duotone"
+              name="solar:trash-bin-minimalistic-bold-duotone"
               class="size-6"
             />
           </button>

@@ -15,7 +15,7 @@ const {
   carregarPerfil,
   carregarPostagens
 } = usePerfil()
-
+const {apagarPostagem} = usePostagens(perfil)
 const carregandoConversa = ref(false)
 
 // Identifica se é o próprio perfil, suportando id padrão e sub do JWT
@@ -23,7 +23,15 @@ const isOwnProfile = computed(() => {
   const loggedInId = user.value?.id || (user.value as any)?.sub
   return route.params.id === 'me' || route.params.id === loggedInId
 })
+const handleDeletePost = async (postId: number) => {
+  if (!postId) return
 
+  const sucesso = await apagarPostagem(postId)
+if (sucesso && perfil.value) {
+    // Chama a função de carregar novamente
+    await carregarPostagens(perfil.value.id)
+  }
+}
 const iniciarConversa = async () => {
   if (isOwnProfile.value || !perfil.value) return
   carregandoConversa.value = true
@@ -36,6 +44,7 @@ const iniciarConversa = async () => {
 
 const inicializarDados = async () => {
   let targetId = route.params.id as string
+  let idParaBuscar = targetId
 
   if (targetId === 'me') {
     if (!user.value) {
@@ -44,6 +53,8 @@ const inicializarDados = async () => {
     }
     targetId = user.value.id || (user.value as any).sub
   }
+  await carregarPerfil(targetId)
+  await carregarPostagens(targetId)
 
   // Logs de diagnóstico no console do navegador (F12)
   const loggedInId = user.value?.id || (user.value as any)?.sub
@@ -74,6 +85,12 @@ watch(user, async (newUser) => {
 
     // Se a rota for /me, agora que o usuário carregou, inicializamos os dados reais do perfil
     if (route.params.id === 'me') {
+
+
+
+
+
+      
       await inicializarDados()
     }
   } else if (newUser === null && route.params.id === 'me') {
@@ -113,9 +130,9 @@ watch(() => route.params.id, async () => {
     <!-- Perfil Real Carregado -->
     <div
       v-else-if="perfil"
-      class="flex gap-3"
+      class="flex gap-3 items-center justify-center"
     >
-      <div class="w-32 h-32 shrink-0">
+      <div class="size-20 shrink-0">
         <img
           class="rounded-full w-full h-full object-cover border border-primary/20"
           :src="perfil.avatar_url"
@@ -138,10 +155,6 @@ watch(() => route.params.id, async () => {
             v-if="!isOwnProfile"
             class="flex justify-between gap-2 shrink-0"
           >
-            <UButton variant="subtle">
-              Seguir
-            </UButton>
-
             <UButton
               color="neutral"
               variant="outline"
@@ -152,18 +165,12 @@ watch(() => route.params.id, async () => {
             </UButton>
           </div>
         </div>
-
-        <div class="mt-3">
-          <p class="text-sm text-neutral-500">
-            Explorando e criando coisas incríveis todos os dias!
-          </p>
-        </div>
       </div>
     </div>
 
     <!-- Grid de Publicações Reais -->
     <div class="border-t border-neutral-500/20 pt-6">
-      <h3 class="text-lg font-bold mb-4 text-on-surface">
+      <h3 class="text-lg text-center font-bold mb-4 text-on-surface">
         Publicações
       </h3>
 
@@ -194,22 +201,19 @@ watch(() => route.params.id, async () => {
       </div>
 
       <!-- Lista de Publicações -->
-      <UPageGrid
+      <div
         v-else
-        class="grid grid-cols-3 gap-4"
+        class="justify-center items-center flex gap-4"
       >
-        <div
+        <div class="w-full sm:w-lg flex flex-col gap-4">
+        <postCard
           v-for="post in postagens"
           :key="post.id"
-          class="group relative profile-grid-item aspect-square rounded-xl overflow-hidden cursor-pointer"
-        >
-          <img
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            :src="post.imagem_url"
-            :alt="post.conteudo"
-          >
+          :post="post"
+          @delete-post="handleDeletePost(post.id)"
+        />
         </div>
-      </UPageGrid>
+      </div>
     </div>
   </div>
 </template>
