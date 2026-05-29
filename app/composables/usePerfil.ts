@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Postagem, Perfil } from '~/types'
+import type { Perfil } from '~/types'
 
 export const usePerfil = () => {
   const supabase = useSupabaseClient()
 
   const perfil = ref<Perfil | null>(null)
-  const postagens = ref<Postagem[]>([])
   const carregandoPerfil = ref(false)
-  const carregandoPostagens = ref(false)
 
   const carregarPerfil = async (targetId: string) => {
     carregandoPerfil.value = true
@@ -37,46 +35,9 @@ export const usePerfil = () => {
     }
   }
 
-  const carregarPostagens = async (targetId: string) => {
-    carregandoPostagens.value = true
-    try {
-      const { data, error } = await (supabase.from('postagens') as any)
-        .select('*, perfis(*)')
-        .eq('user_id', targetId)
-        .order('id', { ascending: false })
-
-      if (data && !error) {
-        postagens.value = data.map((p: any) => ({
-          id: p.id,
-          user_id: p.user_id,
-          conteudo: p.conteudo,
-          imagem_url: p.imagem_url,
-          criado_em: p.criado_em,
-          perfil: p.perfis
-            ? {
-                id: p.perfis.id,
-                nome: p.perfis.nome,
-                avatar_url: p.perfis.avatar_url
-              }
-            : undefined
-        }))
-      } else {
-        postagens.value = []
-      }
-    } catch (e) {
-      console.error('Erro ao carregar postagens:', e)
-      postagens.value = []
-    } finally {
-      carregandoPostagens.value = false
-    }
-  }
-
   return {
     perfil,
-    postagens,
     carregandoPerfil,
-    carregandoPostagens,
-    carregarPerfil,
-    carregarPostagens
+    carregarPerfil
   }
 }

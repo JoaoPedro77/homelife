@@ -48,12 +48,17 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
       : undefined
   })
 
-  const carregarPostagens = async () => {
+  const carregarPostagens = async (targetId?: string) => {
     carregando.value = true
     try {
-      const { data, error } = await (supabase.from('postagens') as any)
+      let query = (supabase.from('postagens') as any)
         .select('*, perfis(*)')
-        .order('id', { ascending: false })
+
+      if (targetId) {
+        query = query.eq('user_id', targetId)
+      }
+
+      const { data, error } = await query.order('id', { ascending: false })
 
       if (error || !data) {
         posts.value = []

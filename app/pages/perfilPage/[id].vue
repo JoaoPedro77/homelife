@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useConversas } from '~/composables/useConversas'
 import { usePerfil } from '~/composables/usePerfil'
+import { usePostagens } from '~/composables/usePostagens'
 import { useAuth } from '~/composables/useAuth'
 
 const route = useRoute()
@@ -10,13 +11,15 @@ const { supabaseUser: user } = useAuth()
 const { buscarOuCriarConversa } = useConversas()
 const {
   perfil,
-  postagens,
   carregandoPerfil,
-  carregandoPostagens,
-  carregarPerfil,
-  carregarPostagens
+  carregarPerfil
 } = usePerfil()
-const { apagarPostagem } = usePostagens(perfil)
+const {
+  posts,
+  carregando,
+  carregarPostagens,
+  apagarPostagem
+} = usePostagens(perfil)
 const carregandoConversa = ref(false)
 
 const isOwnProfile = computed(() => {
@@ -139,7 +142,7 @@ watch(() => route.params.id, async () => {
       </h3>
 
       <div
-        v-if="carregandoPostagens"
+        v-if="carregando"
         class="grid grid-cols-3 gap-4"
       >
         <div
@@ -150,7 +153,7 @@ watch(() => route.params.id, async () => {
       </div>
 
       <div
-        v-else-if="postagens.length === 0"
+        v-else-if="posts.length === 0"
         class="flex flex-col items-center justify-center py-12 text-center"
       >
         <UIcon
@@ -168,7 +171,7 @@ watch(() => route.params.id, async () => {
       >
         <div class="w-full sm:w-lg flex flex-col gap-4">
           <postCard
-            v-for="post in postagens"
+            v-for="post in posts"
             :key="post.id"
             :post="post"
             @delete-post="handleDeletePost(post.id)"
