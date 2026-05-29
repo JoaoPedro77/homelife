@@ -137,10 +137,6 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
     }
   }
 
-  const limparPostagens = () => {
-    posts.value = []
-  }
-
   const mensagemMaxima = computed(() => 500)
   const podeCriar = (conteudo: string) => validarConteudo(conteudo)
 
@@ -150,7 +146,6 @@ export const usePostagens = (usuario?: Ref<Perfil | null>) => {
     perfilPadrao,
     criarPostagem,
     apagarPostagem,
-    limparPostagens,
     carregarPostagens,
     podeCriar,
     mensagemMaxima

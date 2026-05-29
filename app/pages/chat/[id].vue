@@ -18,7 +18,6 @@ const {
 
 const supabase = useSupabaseClient()
 const outroParticipante = ref<Perfil | null>(null)
-const carregandoDados = ref(true)
 
 const scrollArea = useTemplateRef('scrollArea')
 
@@ -76,8 +75,6 @@ onMounted(async () => {
       }
     } catch (e) {
       console.error('Erro ao obter detalhes da conversa:', e)
-    } finally {
-      carregandoDados.value = false
     }
 
     // 2. Inicializa as mensagens e o realtime filtrado
