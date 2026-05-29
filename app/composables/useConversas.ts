@@ -14,7 +14,6 @@ export const useConversas = () => {
     try {
       const me = currentUser.value.id
 
-      // 1. Busca todas as conversas em que eu sou participante
       const { data: conversasData, error: conversasError } = await (supabase.from('conversas') as any)
         .select('*')
         .or(`user1_id.eq.${me},user2_id.eq.${me}`)
@@ -25,8 +24,6 @@ export const useConversas = () => {
         listaConversas.value = []
         return
       }
-
-      // 2. Extrai IDs dos outros participantes para buscar os perfis de uma vez só
       const listOutrosIds = conversasData.map((c: any) => c.user1_id === me ? c.user2_id : c.user1_id)
 
       const { data: perfisData, error: perfisError } = await (supabase.from('perfis') as any)
@@ -35,7 +32,6 @@ export const useConversas = () => {
 
       if (perfisError) throw perfisError
 
-      // Mapeia perfis indexando por ID para busca rápida
       const perfisMap = new Map<string, Perfil>()
       perfisData?.forEach((p: any) => {
         const perfilComAvatar = {
@@ -45,7 +41,6 @@ export const useConversas = () => {
         perfisMap.set(p.id, perfilComAvatar)
       })
 
-      // 3. Busca a última mensagem de todas as conversas ativas
       const conversasIds = conversasData.map((c: any) => c.id)
       const { data: mensagensData, error: mensagensError } = await (supabase.from('mensagens') as any)
         .select('*')
@@ -54,7 +49,6 @@ export const useConversas = () => {
 
       if (mensagensError) throw mensagensError
 
-      // Agrupa a mensagem mais recente de cada conversa
       const ultimasMensagensMap = new Map<number, Mensagem>()
       mensagensData?.forEach((m: any) => {
         if (!ultimasMensagensMap.has(m.id_conversa)) {
@@ -62,7 +56,6 @@ export const useConversas = () => {
         }
       })
 
-      // 4. Monta o objeto final de Conversa esperado pelo frontend
       listaConversas.value = conversasData.map((c: any) => {
         const outroId = c.user1_id === me ? c.user2_id : c.user1_id
 
@@ -70,7 +63,6 @@ export const useConversas = () => {
 
         const ultimaMsg = ultimasMensagensMap.get(c.id)
 
-        // Se for criado_em, converte o timestamp em hora legível
         if (ultimaMsg && ultimaMsg.criado_em) {
           const dataMsg = new Date(ultimaMsg.criado_em)
           ultimaMsg.criado_em = dataMsg.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
@@ -97,10 +89,8 @@ export const useConversas = () => {
     const me = currentUser.value.id
 
     try {
-      // Ordena alfabeticamente para garantir a unicidade no banco (regra UNIQUE)
       const [u1, u2] = [me, outroUsuarioId].sort()
 
-      // 1. Tenta buscar se a conversa já existe
       const { data, error } = await (supabase.from('conversas') as any)
         .select('id')
         .eq('user1_id', u1)
@@ -113,7 +103,6 @@ export const useConversas = () => {
         return data.id
       }
 
-      // 2. Se não existir, cria a nova conversa
       const { data: nova, error: insertError } = await (supabase.from('conversas') as any)
         .insert({ user1_id: u1, user2_id: u2 })
         .select('id')
