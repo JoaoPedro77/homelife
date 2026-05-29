@@ -34,11 +34,7 @@ export const useConversas = () => {
 
       const perfisMap = new Map<string, Perfil>()
       perfisData?.forEach((p: any) => {
-        const perfilComAvatar = {
-          ...p,
-          avatar_url: p.avatar_url
-        }
-        perfisMap.set(p.id, perfilComAvatar)
+        perfisMap.set(p.id, { ...p })
       })
 
       const conversasIds = conversasData.map((c: any) => c.id)
@@ -51,6 +47,7 @@ export const useConversas = () => {
 
       const ultimasMensagensMap = new Map<number, Mensagem>()
       mensagensData?.forEach((m: any) => {
+        // pega o ultimo se n tiver na lista.
         if (!ultimasMensagensMap.has(m.id_conversa)) {
           ultimasMensagensMap.set(m.id_conversa, m)
         }
