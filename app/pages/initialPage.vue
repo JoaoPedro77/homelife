@@ -194,15 +194,6 @@ onBeforeUnmount(() => {
             :post="post"
             @delete-post="handleDeletePost(post.id)"
           />
-
-          <div
-            v-if="posts.length === 0"
-            class="rounded-xl border border-white/10 bg-surface-container p-6 text-center"
-          >
-            <p class="font-body-md text-on-surface-variant">
-              Crie sua primeira postagem usando os campos acima. Quando você postar, ela aparecerá aqui como um card.
-            </p>
-          </div>
         </template>
       </div>
     </div>
