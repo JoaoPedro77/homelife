@@ -57,25 +57,8 @@ const inicializarDados = async () => {
   await carregarPostagens(targetId)
 }
 
-watch(user, async (newUser) => {
-  const userId = newUser?.id || (newUser as any)?.sub
-  if (newUser && userId) {
-    if (route.params.id === userId) {
-      navigateTo('/perfilPage/me', { replace: true })
-      return
-    }
-    if (route.params.id === 'me') {
-      await inicializarDados()
-    }
-  } else if (newUser === null && route.params.id === 'me') {
-    navigateTo('/login')
-  }
-}, { immediate: true })
-
 onMounted(async () => {
-  if (route.params.id !== 'me') {
-    await inicializarDados()
-  }
+  await inicializarDados()
 })
 
 watch(() => route.params.id, async () => {
